@@ -1,0 +1,42 @@
+﻿Flora Non-Commercial Share-Alike & Attribution License
+======================================================
+Copyright (c) 2026 Kenzhegali Nuras, Sarsenbai Alikhan
+Project Repository: https://github.com/qaddasd/Flora
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software, model architectures, weights, and associated documentation 
+files (the "Software"), to use, copy, modify, merge, and distribute the Software 
+strictly subject to the following mandatory conditions:
+
+1. MANDATORY ATTRIBUTION (Credit & Citation)
+   You must explicitly give appropriate credit to the original authors 
+   (Kenzhegali Nuras and Sarsenbai Alikhan), provide a prominent link to the 
+   original Flora repository (https://github.com/qaddasd/Flora), and cite 
+   the project in any associated publications, reports, or documentation.
+
+2. NON-COMMERCIAL USE ONLY
+   The Software, model weights, and derived technologies may NOT be used for 
+   commercial purposes, monetary gain, or within closed proprietary systems 
+   without express prior written consent from the copyright holders.
+
+3. MANDATORY SHARE-ALIKE / OPEN SOURCE
+   If you remix, adapt, fine-tune, extend, or build upon this Software or 
+   its architecture to create derivative works, you MUST release and distribute 
+   your entire derivative work and source code under the exact same open terms 
+   (Open Source / Non-Commercial Share-Alike).
+
+4. MANDATORY AUTHOR NOTIFICATION
+   Any party, researcher, or institution utilizing this Software, architecture, 
+   or model in an academic paper, scientific publication, benchmark, or 
+   derivative project MUST notify the authors upon publication by opening an 
+   informational Issue on the repository (https://github.com/qaddasd/Flora) or 
+   contacting the authors.
+
+DISCLAIMER
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

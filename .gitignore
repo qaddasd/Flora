@@ -1,0 +1,54 @@
+# ── Python ──────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+
+# ── Large artifacts (weights & datasets stay local) ────
+checkpoints/
+models/
+data/
+*.ckpt
+*.pt
+*.zip
+
+# ── Excluded folders (scripts, assets, benchmarks) ─────
+scripts/
+assets/
+benchmarks/
+plots/
+
+# ── LaTeX & Paper ──────────────────────────────────────
+*.tex
+*.bib
+*.pdf
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.synctex*
+*.fls
+*.fdb_latexmk
+
+# ── Runtime outputs & cache ────────────────────────────
+output/
+outputs_inference/
+results/
+cache/
+*.log
+
+# ── Environment & secrets ───────────────────────────────
+.env
+.env.*
+.mcp.json
+
+# ── OS & IDE ───────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.workbuddy-ai/
+.idea/
+.vscode/

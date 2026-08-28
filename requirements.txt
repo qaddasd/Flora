@@ -1,0 +1,28 @@
+# Core
+torch>=2.1
+torchaudio>=2.1
+transformers>=4.40
+
+# Scientific stack
+numpy>=1.24
+scipy>=1.10
+pandas>=2.0
+matplotlib>=3.7
+
+# Neuroimaging
+nibabel>=5.1
+nilearn>=0.10
+
+# Video decoding
+av>=11.0
+
+# Training
+lightning>=2.1
+
+# Visualization
+plotly>=5.18
+pyvista>=0.43
+
+# Export
+onnxruntime>=1.16
+pillow>=10.0
