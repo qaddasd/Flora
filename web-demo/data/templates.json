@@ -1,0 +1,126 @@
+{
+  "templates": [
+    {
+      "id": "ocean_waves",
+      "title": "Ocean Waves",
+      "desc": "Slow swell and foam over deep water.",
+      "video": "videos/ocean_waves.mp4",
+      "thumb": "videos/ocean_waves.jpg",
+      "pred": "data/ocean_waves_pred.bin",
+      "feats": "data/ocean_waves_feats.bin",
+      "T": 5,
+      "kind": "parcels"
+    },
+    {
+      "id": "night_drive",
+      "title": "Night Drive",
+      "desc": "Headlights and neon streaking past.",
+      "video": "videos/night_drive.mp4",
+      "thumb": "videos/night_drive.jpg",
+      "pred": "data/night_drive_pred.bin",
+      "feats": "data/night_drive_feats.bin",
+      "T": 5,
+      "kind": "parcels"
+    },
+    {
+      "id": "forest_birds",
+      "title": "Forest Birds",
+      "desc": "Dappled light and birdsong.",
+      "video": "videos/forest_birds.mp4",
+      "thumb": "videos/forest_birds.jpg",
+      "pred": "data/forest_birds_pred.bin",
+      "feats": "data/forest_birds_feats.bin",
+      "T": 5,
+      "kind": "parcels"
+    },
+    {
+      "id": "fireplace",
+      "title": "Fireplace",
+      "desc": "Flickering flames with crackle.",
+      "video": "videos/fireplace.mp4",
+      "thumb": "videos/fireplace.jpg",
+      "pred": "data/fireplace_pred.bin",
+      "feats": "data/fireplace_feats.bin",
+      "T": 5,
+      "kind": "parcels"
+    },
+    {
+      "id": "city_rain",
+      "title": "City Rain",
+      "desc": "Rain streaks over a night city.",
+      "video": "videos/city_rain.mp4",
+      "thumb": "videos/city_rain.jpg",
+      "pred": "data/city_rain_pred.bin",
+      "feats": "data/city_rain_feats.bin",
+      "T": 5,
+      "kind": "parcels"
+    },
+    {
+      "id": "nebula",
+      "title": "Nebula Drift",
+      "desc": "Slow cosmic clouds, ambient pad.",
+      "video": "videos/nebula.mp4",
+      "thumb": "videos/nebula.jpg",
+      "pred": "data/nebula_pred.bin",
+      "feats": "data/nebula_feats.bin",
+      "T": 5,
+      "kind": "parcels"
+    }
+  ],
+  "dataset_clips": [
+    {
+      "id": "clip_000000",
+      "title": "Dataset clip #1",
+      "desc": "Held-out clip with measured fMRI (teacher).",
+      "pred": "data/clip_000000_pred.bin",
+      "true": "data/clip_000000_true.bin",
+      "T": 5,
+      "kind": "vertices",
+      "mean_r": 0.31614838982824456,
+      "parcel_r": 0.691680980091367,
+      "parcel_r_per_tr": [
+        0.5739785734671573,
+        0.6904812447339095,
+        0.7308776719004136,
+        0.7502785277718952,
+        0.7127888825834595
+      ]
+    },
+    {
+      "id": "clip_000001",
+      "title": "Dataset clip #2",
+      "desc": "Held-out clip with measured fMRI (teacher).",
+      "pred": "data/clip_000001_pred.bin",
+      "true": "data/clip_000001_true.bin",
+      "T": 5,
+      "kind": "vertices",
+      "mean_r": 0.4382448120321233,
+      "parcel_r": 0.8978562923881779,
+      "parcel_r_per_tr": [
+        0.8743108577303508,
+        0.9049119568605005,
+        0.9343058367534427,
+        0.8884235060206489,
+        0.8873293045759463
+      ]
+    },
+    {
+      "id": "clip_000002",
+      "title": "Dataset clip #3",
+      "desc": "Held-out clip with measured fMRI (teacher).",
+      "pred": "data/clip_000002_pred.bin",
+      "true": "data/clip_000002_true.bin",
+      "T": 5,
+      "kind": "vertices",
+      "mean_r": 0.41408079351124344,
+      "parcel_r": 0.8742969383420169,
+      "parcel_r_per_tr": [
+        0.8648830149630795,
+        0.8691523837400287,
+        0.8609917244274432,
+        0.84100210280488,
+        0.935455465774653
+      ]
+    }
+  ]
+}

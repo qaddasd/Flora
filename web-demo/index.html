@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flora — ИИ-модель человеческого мозга</title>
+<meta name="description" content="Flora: лёгкая мультимодальная модель кодирования, предсказывающая фМРТ-ответы на естественное видео. Живое демо в браузере." />
+<link rel="icon" type="image/x-icon" href="./favicon.ico" />
+<link rel="icon" type="image/png" href="./assets/logo.png" />
+<link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Flora" />
+<meta property="og:title" content="Flora — An AI Model of the Human Brain" />
+<meta property="og:description" content="A lightweight multimodal brain encoding model predicting fMRI responses to sight, sound and language — with a live demo running entirely in your browser on WebGPU." />
+<meta property="og:image" content="./images/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Flora — An AI Model of the Human Brain" />
+<meta name="twitter:description" content="Predicting neural responses to sight, sound and language. Live whole-brain demo in your browser." />
+<meta name="twitter:image" content="./images/og.png" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "Flora",
+      "description": "Project page and live demo of Flora, a lightweight multimodal brain encoding model.",
+      "url": "./",
+      "inLanguage": ["ru", "en"]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Flora Web Demo",
+      "applicationCategory": "ScienceApplication",
+      "operatingSystem": "Any (WebGPU-capable browser)",
+      "description": "Whole-brain fMRI encoding demo: predicted cortical movies, true-vs-predicted comparison, in-silico modality lesions and live inference on uploaded video, running on ONNX Runtime Web.",
+      "offers": { "@type": "Offer", "price": "0" }
+    },
+    {
+      "@type": "ScholarlyArticle",
+      "headline": "Flora: a lightweight multimodal brain encoding model predicting fMRI responses to naturalistic video",
+      "url": "./Flora-Report.pdf",
+      "license": "https://github.com/qaddasd/Flora/blob/main/LICENSE"
+    }
+  ]
+}
+</script>
+<script>
+  (function () {
+    var url = location.origin + location.pathname;
+    var c = document.createElement("link");
+    c.rel = "canonical"; c.href = url;
+    document.head.appendChild(c);
+    var og = document.createElement("meta");
+    og.setAttribute("property", "og:url"); og.setAttribute("content", url);
+    document.head.appendChild(og);
+  })();
+</script>
+<link rel="stylesheet" href="./css/main.css" />
+<script type="importmap">
+  { "imports": { "three": "./vendor/three.module.js" } }
+</script>
+</head>
+<body data-title-key="m.title">
+<noscript>
+  <p style="padding:80px 24px 0;text-align:center;font-family:sans-serif;color:#f6f6f6;background:#000;">
+    Flora — a lightweight multimodal brain encoding model predicting fMRI responses to naturalistic video.
+    This page needs JavaScript for the interactive brain panel; the full demo also requires a WebGPU-capable browser.
+  </p>
+</noscript>
+
+<!-- ══ Nav bar ══════════════════════════════════════════════════════════ -->
+<header id="nav">
+  <button id="nav-burger" aria-label="Open menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+
+  <a id="nav-brand" href="./">
+    <img class="brand-logo" src="./assets/logo-white.png" alt="Flora" />
+    <span class="brand-sub" data-i18n="m.nav.sub">Whole-brain encoding model</span>
+  </a>
+
+  <nav id="nav-links">
+    <button class="nav-lang" data-lang-btn>EN</button>
+    <a href="./demo/" class="nav-link nav-demo" data-i18n="m.nav.demo">Demo</a>
+    <a href="https://github.com/qaddasd/Flora" target="_blank" rel="noreferrer" class="nav-link"><span data-i18n="m.nav.code">Code</span><svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
+    <a href="./Flora-Report.pdf" target="_blank" rel="noreferrer" class="nav-link" data-paper><span data-i18n="m.nav.paper">Paper</span><svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
+    <a href="https://github.com/qaddasd/Flora/tree/main/checkpoints" target="_blank" rel="noreferrer" class="nav-link"><span data-i18n="m.nav.weights">Weights</span><svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
+  </nav>
+</header>
+
+<!-- mobile drawer -->
+<div id="drawer" class="hidden">
+  <div class="drawer-backdrop" data-close></div>
+  <section class="drawer-panel">
+    <div class="drawer-head" data-close>
+      <img class="brand-logo" src="./assets/logo-white.png" alt="Flora" />
+      <div class="brand-sub" data-i18n="m.nav.sub">Whole-brain encoding model</div>
+    </div>
+    <nav>
+      <a href="./" data-i18n="m.drawer.home">Home</a>
+      <a href="./demo/" data-i18n="m.nav.demo">Demo</a>
+      <a href="https://github.com/qaddasd/Flora" target="_blank" rel="noreferrer" data-i18n="m.nav.code">Code</a>
+      <a href="./Flora-Report.pdf" target="_blank" rel="noreferrer" data-paper data-i18n="m.nav.paper">Paper</a>
+      <a href="https://github.com/qaddasd/Flora/tree/main/checkpoints" target="_blank" rel="noreferrer" data-i18n="m.nav.weights">Weights</a>
+    </nav>
+  </section>
+</div>
+
+<!-- ══ Hero ═════════════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-media">
+    <img id="hero-poster" src="./images/video-banner.jpg" alt="" aria-hidden="true" draggable="false" />
+    <video id="hero-video" src="./videos/video-banner.mp4" autoplay muted loop playsinline preload="metadata"></video>
+  </div>
+  <div class="hero-shade"></div>
+  <div class="hero-labels" aria-hidden="true">
+    <span class="hl left" data-i18n="m.hero.l">Actual brain activity</span>
+    <span class="hl right" data-i18n="m.hero.r">Predicted brain activity</span>
+  </div>
+  <div class="hero-spacer"></div>
+  <div class="hero-copy">
+    <div class="hero-inner">
+      <img class="hero-logo" src="./assets/logo-white.png" alt="Flora" />
+      <h1 data-i18n="m.hero.h1">An AI Model of<br />the Human Brain</h1>
+      <p class="hero-sub" data-i18n="m.hero.sub">Predicting neural responses<br />to sight, sound and language.</p>
+      <div class="hero-ctas">
+        <a class="cta" href="./demo/" data-i18n="m.cta.demo">Explore the Demo</a>
+        <a class="cta" href="./Flora-Report.pdf" target="_blank" rel="noreferrer" data-paper data-i18n="m.cta.paper">Read the Paper</a>
+        <a class="cta" href="https://github.com/qaddasd/Flora" target="_blank" rel="noreferrer" data-i18n="m.cta.code">Access the Code</a>
+        <a class="cta" href="https://github.com/qaddasd/Flora/tree/main/checkpoints" target="_blank" rel="noreferrer" data-i18n="m.cta.model">Download the Model</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-tail"></div>
+</section>
+
+<!-- ══ Article + sticky demo panel ══════════════════════════════════════ -->
+<main id="content">
+  <div class="grid">
+
+    <article id="article">
+
+      <section id="intro" class="a-section" data-panel="intro">
+        <div class="sec-head">
+          <h2 data-i18n="m.s1.title">Mapping Brain Functions: The Challenge of Scale</h2>
+          <div class="sec-nav">
+            <button class="sec-btn" data-dir="-1" aria-label="Previous section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3.5v9M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="sec-btn" data-dir="1" aria-label="Next section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12.5v-9M12 9l-4 4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="sec-body">
+          <p data-i18n="m.s1.p1">For decades, neuroscience has faced a major bottleneck: the need for new brain recordings for every new experiment. This has made understanding brain mechanisms slow, costly, and difficult to scale and integrate.</p>
+          <p data-i18n="m.s1.p2">Today, we’re releasing <strong>Flora</strong>. This lightweight encoding model acts as a digital mirror of human cortical activity in response to sight, sound and language — transforming months of lab work into seconds of computation, and running <strong>entirely in your browser</strong>.</p>
+        </div>
+      </section>
+
+      <section id="architecture" class="a-section" data-panel="architecture">
+        <div class="sec-head">
+          <h2 data-i18n="m.s2.title">Flora: a three-stage architecture</h2>
+          <div class="sec-nav">
+            <button class="sec-btn" data-dir="-1" aria-label="Previous section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3.5v9M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="sec-btn" data-dir="1" aria-label="Next section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12.5v-9M12 9l-4 4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="sec-body">
+          <p data-i18n="m.s2.p">Flora predicts brain activity through a three-stage pipeline:</p>
+          <ol class="steps">
+            <li><span class="step-n">1</span><span data-i18n="m.s2.l1"><strong>Tri-modal Encoding:</strong> compact frozen encoders — MobileViT-S (video, 2&nbsp;fps), Whisper-Tiny (audio, 16&nbsp;kHz) and MiniLM-L6 (transcript) — capture the stimulus features shared by AI models and the human brain.</span></li>
+            <li><span class="step-n">2</span><span data-i18n="m.s2.l2"><strong>Mixture-of-Experts Fusion:</strong> four transformer layers with top-2 routing, HRF-decay attention and gated modality pooling learn a universal multimodal representation at a constant compute cost.</span></li>
+            <li><span class="step-n">3</span><span data-i18n="m.s2.l3"><strong>Brain Mapping:</strong> a subject-conditioned head maps the fused representation onto 400 Schaefer parcels, unpacked to the full fsaverage5 surface — <strong>20,484 cortical vertices</strong>.</span></li>
+          </ol>
+          <figure class="fig-card">
+            <img src="./images/flora_architecture.png" alt="Flora architecture — three frozen encoders feeding the fusion transformer and subject block" loading="lazy" />
+          </figure>
+        </div>
+      </section>
+
+      <section id="performance" class="a-section" data-panel="performance">
+        <div class="sec-head">
+          <h2 data-i18n="m.s3.title">Lightweight by Design</h2>
+          <div class="sec-nav">
+            <button class="sec-btn" data-dir="-1" aria-label="Previous section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3.5v9M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="sec-btn" data-dir="1" aria-label="Next section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12.5v-9M12 9l-4 4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="sec-body">
+          <p data-i18n="m.s3.p">Conventional encoding models spend hundreds of millions of parameters per subject. Flora keeps the perception frozen and trains only a <strong>~14M-parameter</strong> fusion stack — stable on a single GPU, exportable to ONNX, executable on your laptop’s GPU.</p>
+          <div class="cards">
+            <div class="card">
+              <img src="./assets/chart-bar-891e2d35.svg" alt="" loading="lazy" />
+              <h3 data-i18n="m.s3.c1t">High-quality predictions</h3>
+              <p data-i18n="m.s3.c1p">Best validation Pearson r&nbsp;=&nbsp;<strong>0.7278</strong>; parcel-wise r up to <strong>0.93</strong> on held-out clips — far above a linear ridge baseline.</p>
+            </div>
+            <div class="card">
+              <img src="./assets/three-people-overlapping-50208b54.svg" alt="" loading="lazy" />
+              <h3 data-i18n="m.s3.c2t">Subject generalization</h3>
+              <p data-i18n="m.s3.c2p">Per-subject FiLM conditioning absorbs anatomical variability: a new subject needs only two small vectors, no retraining.</p>
+            </div>
+            <div class="card">
+              <img src="./assets/ai-afe79212.svg" alt="" loading="lazy" />
+              <h3 data-i18n="m.s3.c3t">In-browser inference</h3>
+              <p data-i18n="m.s3.c3p">ONNX Runtime Web + WebGPU: the full pipeline — frames, audio, fusion, cortex — runs locally with no server.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scaling" class="a-section" data-panel="scaling">
+        <div class="sec-head">
+          <h2 data-i18n="m.s4.title">Training Dynamics</h2>
+          <div class="sec-nav">
+            <button class="sec-btn" data-dir="-1" aria-label="Previous section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3.5v9M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="sec-btn" data-dir="1" aria-label="Next section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12.5v-9M12 9l-4 4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="sec-body">
+          <p data-i18n="m.s4.p">Mean per-parcel correlation climbs steeply and peaks at <strong>epoch 52</strong> (r&nbsp;=&nbsp;0.7278), while train correlation keeps rising — the classic signature of a data-limited regime. As more fMRI recordings become available, this approach is likely to keep improving.</p>
+          <figure class="fig-card">
+            <img src="./images/training_results.png" alt="Training dynamics — mean per-parcel Pearson correlation, best validation at epoch 52" loading="lazy" />
+          </figure>
+        </div>
+      </section>
+
+      <section id="vision" class="a-section" data-panel="vision">
+        <div class="sec-head">
+          <h2 data-i18n="m.s5.title">Where the Model Is Most Accurate</h2>
+          <div class="sec-nav">
+            <button class="sec-btn" data-dir="-1" aria-label="Previous section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3.5v9M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="sec-btn" data-dir="1" aria-label="Next section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12.5v-9M12 9l-4 4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="sec-body">
+          <p data-i18n="m.s5.p1">Accuracy follows function: visual cortex is predicted best by the video stream, auditory and language cortex by audio and text. Gated modality pooling lets each cortical region weigh the three streams according to its role — the same topography you can inspect live in the demo’s <strong>Compare</strong> view.</p>
+          <p data-i18n="m.s5.p2">On held-out clips with measured fMRI, Flora’s predicted cortical movies track the recorded ones parcel by parcel — best parcels reach <strong>r&nbsp;≈&nbsp;0.90</strong> across TRs.</p>
+        </div>
+      </section>
+
+      <section id="insilico" class="a-section" data-panel="insilico">
+        <div class="sec-head">
+          <h2 data-i18n="m.s6.title">In-Silico Experiments</h2>
+          <div class="sec-nav">
+            <button class="sec-btn" data-dir="-1" aria-label="Previous section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3.5v9M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="sec-btn" data-dir="1" aria-label="Next section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12.5v-9M12 9l-4 4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="sec-body">
+          <p data-i18n="m.s6.p">By lesioning individual modality streams, we can inspect the cortex in silico: silence the audio and auditory cortex goes quiet; remove the transcript and language areas fade. Try it live — the demo re-runs the fusion model in your browser with any combination of modalities:</p>
+          <div class="chips">
+            <a class="chip" href="./demo/?tab=insilico" data-i18n="m.chip.video">Video</a>
+            <a class="chip" href="./demo/?tab=insilico" data-i18n="m.chip.audio">Audio</a>
+            <a class="chip" href="./demo/?tab=insilico" data-i18n="m.chip.text">Text</a>
+            <a class="chip" href="./demo/?tab=insilico" data-i18n="m.chip.full">Full model</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="explore" class="a-section" data-panel="explore">
+        <div class="sec-head">
+          <h2 data-i18n="m.s7.title">Accelerating Future Research</h2>
+          <div class="sec-nav">
+            <button class="sec-btn" data-dir="-1" aria-label="Previous section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3.5v9M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="sec-btn" data-dir="1" aria-label="Next section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12.5v-9M12 9l-4 4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="sec-body">
+          <p data-i18n="m.s7.p">We open-source the Flora paper, code and model weights to help accelerate research across three key areas:</p>
+          <div class="cards">
+            <div class="card">
+              <img src="./assets/brain-8927c97f.svg" alt="" loading="lazy" />
+              <h3 data-i18n="m.s7.c1t">Neuroscience</h3>
+              <p data-i18n="m.s7.c1p">Simulate cortical responses to plan real experiments and deepen our understanding of the human brain.</p>
+            </div>
+            <div class="card">
+              <img src="./assets/ai-afe79212.svg" alt="" loading="lazy" />
+              <h3 data-i18n="m.s7.c2t">Artificial Intelligence</h3>
+              <p data-i18n="m.s7.c2p">Guide the development of AI architectures toward the efficiency of the human brain.</p>
+            </div>
+            <div class="card">
+              <img src="./assets/cross-briefcase-69a2f9c0.svg" alt="" loading="lazy" />
+              <h3 data-i18n="m.s7.c3t">Healthcare</h3>
+              <p data-i18n="m.s7.c3p">Provide a foundation to improve the diagnosis and treatment of brain disorders.</p>
+            </div>
+          </div>
+          <p class="want-more" data-i18n="m.s7.more">Want to go further?</p>
+          <div class="hero-ctas">
+            <a class="cta" href="./demo/" data-i18n="m.cta.demo">Explore the Demo</a>
+            <a class="cta" href="./Flora-Report.pdf" target="_blank" rel="noreferrer" data-paper data-i18n="m.cta.paper">Read the Paper</a>
+            <a class="cta" href="https://github.com/qaddasd/Flora" target="_blank" rel="noreferrer" data-i18n="m.cta.code">Access the Code</a>
+            <a class="cta" href="https://github.com/qaddasd/Flora/tree/main/checkpoints" target="_blank" rel="noreferrer" data-i18n="m.cta.model">Download the Model</a>
+          </div>
+          <p class="fine" data-i18n="m.s7.fine">Paper, code and weights: <a href="./Flora-Report.pdf" target="_blank" rel="noreferrer">paper</a>, <a href="https://github.com/qaddasd/Flora" target="_blank" rel="noreferrer">code</a>, <a href="https://github.com/qaddasd/Flora/tree/main/checkpoints" target="_blank" rel="noreferrer">model</a>.</p>
+        </div>
+      </section>
+
+    </article>
+
+    <!-- sticky live brain panel -->
+    <aside id="panel-col">
+      <div id="panel-stage">
+        <div id="panel-load" class="hidden"><span>Brain data loading<span class="ellipsis"></span></span></div>
+        <canvas id="panel-canvas"></canvas>
+        <img id="panel-legend" src="./assets/legend-activity-4d3959ff.svg" alt="Activity legend" draggable="false" />
+        <a id="panel-expand" href="./demo/">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          <span data-i18n="m.cta.demo">Explore the Demo</span>
+        </a>
+        <div id="panel-caption">Predicted cortical activity while the model watches “Ocean Waves”.</div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<!-- ══ Footer ═══════════════════════════════════════════════════════════ -->
+<footer id="footer">
+  <div class="foot-left">
+    <img class="foot-logo" src="./assets/logo-white.png" alt="Flora" />
+    <span>© 2026 Flora</span>
+    <a href="https://github.com/qaddasd/Flora" target="_blank" rel="noreferrer" data-i18n="m.foot.code">Code</a>
+    <a href="./Flora-Report.pdf" target="_blank" rel="noreferrer" data-paper data-i18n="m.foot.paper">Paper</a>
+    <a href="./demo/" data-i18n="m.foot.demo">Demo</a>
+  </div>
+  <a class="foot-right" href="https://github.com/qaddasd/Flora" target="_blank" rel="noreferrer">github.com/qaddasd/Flora</a>
+</footer>
+
+<!-- mobile banner -->
+<div id="mobile-banner" class="hidden">
+  <p data-i18n="m.banner.p1">The Flora demo is not optimized for small screens.</p>
+  <p class="mb-dim" data-i18n="m.banner.p2">For an improved experience, we recommend you try it on a larger screen.</p>
+  <button id="mb-continue"><span data-i18n="m.banner.btn">Continue</span></button>
+</div>
+
+<script type="module" src="./js/home.js"></script>
+</body>
+</html>

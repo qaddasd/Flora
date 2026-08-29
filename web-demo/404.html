@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>404 — Flora</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/x-icon" href="./favicon.ico" />
+<link rel="stylesheet" href="./css/main.css" />
+<script type="importmap">
+  { "imports": { "three": "./vendor/three.module.js" } }
+</script>
+<style>
+  #nf-wrap { position: relative; min-height: 100vh; overflow: hidden; }
+  #brain-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+  #nf-lang { position: absolute; top: 20px; right: 24px; z-index: 30; }
+  #nf-copy {
+    position: relative; z-index: 20; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; pointer-events: none;
+  }
+  #nf-copy > div { text-align: center; max-width: 560px; }
+  #nf-copy a, #nf-copy button { pointer-events: auto; }
+  #nf-copy img { width: min(300px, 70%); margin: 0 auto 24px; }
+  #nf-copy h1 { font-size: 4.5rem; font-weight: 700; text-shadow: 0 4px 30px #000; }
+  #nf-copy p { margin-top: 12px; font-size: 17px; line-height: 1.6; color: #ffffffcc; text-shadow: 0 2px 16px #000; }
+</style>
+</head>
+<body data-title-key="e.title">
+<div id="nf-wrap">
+  <canvas id="brain-canvas"></canvas>
+  <button id="nf-lang" class="nav-lang" data-lang-btn>EN</button>
+  <div id="nf-copy">
+    <div>
+      <img src="./assets/logo-white.png" alt="Flora" />
+      <h1>404</h1>
+      <p data-i18n="e.text">Такой страницы нет. Кора, которую вы ищете, не была предсказана.</p>
+      <div class="hero-ctas" style="margin-top:28px;">
+        <a class="cta" href="./" data-i18n="e.home">На главную</a>
+        <a class="cta" href="./demo/" data-i18n="e.demo">Открыть демо</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module">
+  import { applyI18n, wireLang } from "./js/i18n.js";
+  import { BASE, fetchBin, fetchJSON, f16ToF32, robustRange } from "./js/util.js";
+
+  applyI18n();
+  wireLang();
+
+  const { BrainViewer } = await import("./js/brain.js");
+  const viewer = await BrainViewer.create(document.getElementById("brain-canvas"));
+  window.addEventListener("resize", () => viewer.resize());
+
+  const manifest = await fetchJSON(BASE + "data/templates.json");
+  const clips = await Promise.all(manifest.templates.map(async (t) => {
+    const data = f16ToF32(await fetchBin(`${BASE}${t.pred}`));
+    const labels = viewer.parcelLabels, n = viewer.nVertices;
+    const series = [];
+    for (let tr = 0; tr < t.T; tr++) {
+      const verts = new Float32Array(n);
+      const row = tr * 400;
+      for (let v = 0; v < n; v++) {
+        const p = labels[v];
+        if (p > 0) verts[v] = data[row + p - 1];
+      }
+      series.push(verts);
+    }
+    const all = [];
+    for (const s of series) for (let i = 0; i < s.length; i += 4) all.push(s[i]);
+    const [lo, hi] = robustRange(Float32Array.from(all), 1, 99);
+    const range = hi - lo || 1;
+    return {
+      T: t.T,
+      series: series.map((s) => {
+        const o = new Float32Array(s.length);
+        for (let i = 0; i < s.length; i++) o[i] = Math.max(0, Math.min(1, (s[i] - lo) / range));
+        return o;
+      }),
+    };
+  }));
+
+  let clipIdx = 0, phase = 0, last = 0;
+  let scratchA = null, scratchB = null;
+  const BLEND = 1.5 / 8; // share of the loop spent crossfading
+
+  function frame(clip, ph, scratch) {
+    const { series, T } = clip;
+    const f = Math.min(T - 1e-4, ph * T);
+    const i0 = Math.floor(f), i1 = Math.min(T - 1, i0 + 1), w = f - i0;
+    const a = series[i0], b = series[i1];
+    if (!scratch || scratch.length !== a.length) scratch = new Float32Array(a.length);
+    for (let i = 0; i < a.length; i++) scratch[i] = a[i] + (b[i] - a[i]) * w;
+    return scratch;
+  }
+
+  function loop(ts) {
+    requestAnimationFrame(loop);
+    const dt = Math.min(0.1, (ts - last) / 1000 || 0.016);
+    last = ts;
+    phase += dt / 8;
+    if (phase >= 1) { phase -= 1; clipIdx = (clipIdx + 1) % clips.length; }
+
+    scratchA = frame(clips[clipIdx], phase, scratchA);
+    let out = scratchA;
+    if (phase > 1 - BLEND) {
+      let w = (phase - (1 - BLEND)) / BLEND;
+      w = w * w * (3 - 2 * w); // smoothstep
+      scratchB = frame(clips[(clipIdx + 1) % clips.length], phase, scratchB);
+      for (let i = 0; i < out.length; i++) out[i] += (scratchB[i] - out[i]) * w;
+    }
+    viewer.setActivity(out, "pred");
+  }
+  requestAnimationFrame(loop);
+</script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flora Демо — живое кодирование мозга в вашем браузере</title>
+<meta name="description" content="Interactive Flora demo: predicted cortical activity on a 3D brain, true-vs-predicted fMRI comparison, in-silico modality lesions and live WebGPU inference on your own video." />
+<link rel="icon" type="image/x-icon" href="../favicon.ico" />
+<link rel="icon" type="image/png" href="../assets/logo.png" />
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Flora" />
+<meta property="og:title" content="Flora Demo — Live Whole-Brain Encoding in Your Browser" />
+<meta property="og:description" content="Watch predicted cortical activity unfold on a 3D brain — or upload a video and run the Flora pipeline live on WebGPU." />
+<meta property="og:image" content="../images/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Flora Demo — Live Whole-Brain Encoding in Your Browser" />
+<meta name="twitter:description" content="Predicted cortical movies, true-vs-predicted fMRI, in-silico lesions — all in-browser." />
+<meta name="twitter:image" content="../images/og.png" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Flora Web Demo",
+  "applicationCategory": "ScienceApplication",
+  "operatingSystem": "Any (WebGPU-capable browser)",
+  "description": "Whole-brain fMRI encoding demo running on ONNX Runtime Web with Three.js cortical surface rendering.",
+  "offers": { "@type": "Offer", "price": "0" }
+}
+</script>
+<script>
+  (function () {
+    var url = location.origin + location.pathname;
+    var c = document.createElement("link");
+    c.rel = "canonical"; c.href = url;
+    document.head.appendChild(c);
+    var og = document.createElement("meta");
+    og.setAttribute("property", "og:url"); og.setAttribute("content", url);
+    document.head.appendChild(og);
+  })();
+</script>
+<link rel="stylesheet" href="../css/style.css" />
+<script type="importmap">
+  { "imports": { "three": "../vendor/three.module.js" } }
+</script>
+<script src="../vendor/ort/ort.webgpu.min.js" defer></script>
+</head>
+<body>
+<noscript>
+  <p style="padding:80px 24px 0;text-align:center;font-family:sans-serif;color:#f6f6f6;background:#000;">
+    The Flora demo needs JavaScript and a WebGPU-capable browser (WASM fallback available).
+  </p>
+</noscript>
+
+<!-- ══ Top bar ══════════════════════════════════════════════════════════ -->
+<header id="topbar">
+  <a id="home-btn" class="pill" href="../" title="Back to Flora">
+    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M10 4L6 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span data-i18n="d.home">Home</span>
+  </a>
+  <button id="lang-btn" class="pill" data-lang-btn>EN</button>
+
+  <button id="guide-btn" class="pill">
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/></svg>
+    <span data-i18n="d.guide">Show Guide</span>
+  </button>
+
+  <div id="activity-scale">
+    <span class="scale-label">Low</span>
+    <div class="scale-bar"></div>
+    <span class="scale-label">High</span>
+    <div class="scale-caption">Activity</div>
+  </div>
+
+  <div id="backend-badge" class="pill" title="Execution backend">
+    <span class="dot" id="backend-dot"></span><span id="backend-text">Flora · idle</span>
+  </div>
+</header>
+
+<!-- ══ Main split ═══════════════════════════════════════════════════════ -->
+<main id="layout">
+
+  <!-- Left: brain stage -->
+  <section id="stage">
+    <div id="head-wrap">
+      <svg id="head-silhouette" viewBox="0 0 460 520" aria-hidden="true">
+        <path fill="#1b1b1f" d="M268 22
+          C 190 22 128 62 108 128
+          C 100 154 96 176 90 196
+          C 84 216 66 232 62 250
+          C 58 268 74 276 80 284
+          C 74 292 76 300 84 306
+          C 78 318 82 330 94 334
+          C 92 352 102 362 118 364
+          C 132 366 140 362 146 356
+          C 150 380 158 404 172 424
+          C 190 450 224 470 268 474
+          C 330 480 388 452 414 396
+          C 444 332 440 240 420 160
+          C 400 80 344 22 268 22 Z"/>
+      </svg>
+      <canvas id="brain-canvas"></canvas>
+      <div id="brain-compare-labels" class="hidden">
+        <span id="label-left" data-i18n="d.lbl.true">True</span><span id="label-right" data-i18n="d.lbl.pred">Predicted</span>
+      </div>
+      <div id="stage-empty-hint">
+        <h1 class="hint-title">Flora</h1>
+        <div class="hint-sub" data-i18n="d.hint.sub">Pick a clip on the right — or upload your own video —<br/>and watch predicted cortical activity unfold.</div>
+      </div>
+      <div id="video-float" class="hidden">
+        <div class="vf-head">
+          <span id="vf-title">—</span>
+          <button id="vf-close" title="Close">×</button>
+        </div>
+        <video id="vf-video" playsinline></video>
+        <div class="vf-timeline"><div id="vf-progress"></div>
+          <div id="vf-tr-ticks"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom control bar (like the reference) -->
+    <div id="stage-controls">
+      <div class="seg" id="seg-mode">
+        <button data-mode="true" disabled data-i18n="d.seg.true">True</button>
+        <button data-mode="compare" disabled data-i18n="d.seg.compare">Compare</button>
+        <button data-mode="predicted" class="active" data-i18n="d.seg.pred">Predicted</button>
+      </div>
+      <div class="seg" id="seg-surface">
+        <button data-surface="normal" class="active" data-i18n="d.seg.normal">Normal</button>
+        <button data-surface="inflated" data-i18n="d.seg.inflated">Inflated</button>
+      </div>
+      <div class="seg" id="seg-open">
+        <button data-open="1" data-i18n="d.seg.open">Open</button>
+        <button data-open="0" class="active" data-i18n="d.seg.close">Close</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Right: panel -->
+  <section id="panel">
+    <nav id="tabs">
+      <button class="tab active" data-tab="browse" data-i18n="d.tab.browse">Browse Examples</button>
+      <button class="tab" data-tab="compare" data-i18n="d.tab.compare">Compare Performance</button>
+      <button class="tab" data-tab="insilico" data-i18n="d.tab.insilico">Explore In-Silico</button>
+      <button class="tab" data-tab="about" data-i18n="d.tab.about">About Flora</button>
+    </nav>
+
+    <div id="tab-pages">
+
+      <div class="tab-page active" id="page-browse">
+        <p class="lead" data-i18n="d.browse.lead">
+          Compare Flora's predictions with cortical responses to naturalistic video.
+          Flora maps the soundtrack and visual stream of a clip onto
+          <strong>20,484 cortical vertices</strong> (fsaverage5) through a
+          14M-parameter mixture-of-experts fusion stack — running
+          <strong>entirely in your browser on WebGPU</strong>.
+        </p>
+        <p class="dim" data-i18n="d.browse.dim">
+          Template clips below ship with predictions precomputed by the real
+          PyTorch pipeline. Your own uploads are processed live: frames → MobileViT-S,
+          audio → Whisper-Tiny, fusion → Flora MoE → cortex.
+        </p>
+        <div id="uploads-row" class="hidden">
+          <h3 data-i18n="d.browse.my">My uploads</h3>
+          <div class="video-grid" id="uploads-grid"></div>
+        </div>
+        <h3 data-i18n="d.browse.templates">Template clips</h3>
+        <div class="video-grid" id="examples-grid"></div>
+      </div>
+
+      <div class="tab-page" id="page-compare">
+        <p class="lead" data-i18n="d.comp.lead">
+          Held-out clips with measured cortical responses (teacher model).
+          Toggle <strong>True</strong>, <strong>Predicted</strong> or
+          <strong>Compare</strong> under the brain to inspect agreement.
+        </p>
+        <div id="compare-summary">
+          <div class="stat-card"><div class="stat-num" id="stat-best-r">—</div><div class="stat-lbl" data-i18n="d.comp.best">best parcel r</div></div>
+          <div class="stat-card"><div class="stat-num" id="stat-mean-r">—</div><div class="stat-lbl" data-i18n="d.comp.mean">mean parcel r</div></div>
+          <div class="stat-card"><div class="stat-num">14M</div><div class="stat-lbl" data-i18n="d.comp.params">trainable params</div></div>
+        </div>
+        <div id="compare-list"></div>
+      </div>
+
+      <div class="tab-page" id="page-insilico">
+        <p class="lead" data-i18n="d.is.lead">
+          Lesion individual modality streams and watch the cortex respond —
+          executed <strong>live</strong> by the Flora fusion model in WebGPU.
+        </p>
+        <div class="insilico-controls">
+          <div class="is-row">
+            <label data-i18n="d.is.stim">Stimulus</label>
+            <div class="chip-row" id="is-clips"></div>
+          </div>
+          <div class="is-row">
+            <label data-i18n="d.is.mods">Active modalities</label>
+            <div class="chip-row" id="is-mods">
+              <button class="chip on" data-mod="video" data-i18n="d.is.video">Video</button>
+              <button class="chip on" data-mod="audio" data-i18n="d.is.audio">Audio</button>
+              <button class="chip on" data-mod="text" data-i18n="d.is.text">Text</button>
+            </div>
+          </div>
+          <button id="is-run" class="cta" data-i18n="d.is.run">Run experiment</button>
+          <div id="is-status" class="dim"></div>
+          <div id="is-result" class="hidden">
+            <div class="stat-card"><div class="stat-num" id="is-delta">—</div><div class="stat-lbl" data-i18n="d.is.delta">mean |Δ| vs full input</div></div>
+            <canvas id="is-chart" width="520" height="120"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-page" id="page-about">
+        <p class="lead" data-i18n="d.about.lead">
+          <strong>Flora</strong> — a lightweight multimodal brain encoding model
+          predicting fMRI responses to naturalistic video.
+        </p>
+        <div class="about-pipeline">
+          <div class="ap-col">
+            <div class="ap-node">Video 2 fps<br/><span>MobileViT-S · frozen</span></div>
+            <div class="ap-node">Audio 16 kHz<br/><span>Whisper-Tiny enc · frozen</span></div>
+            <div class="ap-node">Transcript<br/><span>MiniLM-L6 · frozen</span></div>
+          </div>
+          <div class="ap-arrow">→</div>
+          <div class="ap-col">
+            <div class="ap-node hot">MoE Fusion ×2<br/><span>8 heads · 4 experts · HRF bias</span></div>
+            <div class="ap-node">Gated pooling + HRF conv<br/><span>double-Gamma prior</span></div>
+          </div>
+          <div class="ap-arrow">→</div>
+          <div class="ap-col">
+            <div class="ap-node hot">Cortex<br/><span>400 parcels → 20,484 vertices</span></div>
+          </div>
+        </div>
+        <ul class="about-list">
+          <li><strong>~14M</strong> trainable parameters, <strong>67M</strong> frozen encoders</li>
+          <li>Best validation Pearson r = <strong>0.7278</strong> (epoch 52)</li>
+          <li>Mixture-of-Experts: top-2 routing, load-balancing + z-loss</li>
+          <li>Hemodynamic priors: HRF-decay attention + learnable HRF convolution</li>
+          <li id="about-backend">Backend: detecting…</li>
+        </ul>
+        <p class="dim" data-i18n="d.about.w">Weights: <code>checkpoints/best-epoch=052-val/pearson_r=0.7278.ckpt</code><br/>
+        ONNX FP16 export · ONNX Runtime Web · Three.js custom shaders</p>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- ══ Upload / processing modal ════════════════════════════════════════ -->
+<div id="upload-modal" class="hidden">
+  <div class="um-card">
+    <div class="um-head">
+      <span id="um-title" data-i18n="d.um.title">Process your video</span>
+      <button id="um-close">×</button>
+    </div>
+
+    <div id="um-drop">
+      <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
+      <p data-i18n="d.um.drop">Drop a video here or <u>browse</u></p>
+      <p class="dim small" data-i18n="d.um.drop2">MP4 / WebM · up to ~30 s analysed (Whisper window)</p>
+      <input type="file" id="um-input" accept="video/*" />
+    </div>
+
+    <div id="um-pipeline" class="hidden">
+      <div class="pipe-step" data-step="decode">
+        <div class="ps-icon"></div>
+        <div class="ps-body"><div class="ps-title" data-i18n="d.ps.decode">Decode video</div><div class="ps-info dim"></div></div>
+      </div>
+      <div class="pipe-step" data-step="frames">
+        <div class="ps-icon"></div>
+        <div class="ps-body"><div class="ps-title" data-i18n="d.ps.frames">Sample 5 frames @ 256²</div>
+          <div class="ps-frames" id="ps-frames"></div></div>
+      </div>
+      <div class="pipe-step" data-step="video-enc">
+        <div class="ps-icon"></div>
+        <div class="ps-body"><div class="ps-title"><span data-i18n="d.ps.venc">MobileViT-S encoder</span> <span class="ps-tag">WebGPU</span></div>
+          <div class="ps-bar"><div></div></div><div class="ps-info dim"></div></div>
+      </div>
+      <div class="pipe-step" data-step="audio">
+        <div class="ps-icon"></div>
+        <div class="ps-body"><div class="ps-title" data-i18n="d.ps.audio">Decode audio · 16 kHz mono</div>
+          <canvas id="ps-wave" width="520" height="56"></canvas></div>
+      </div>
+      <div class="pipe-step" data-step="audio-enc">
+        <div class="ps-icon"></div>
+        <div class="ps-body"><div class="ps-title"><span data-i18n="d.ps.aenc">Whisper-Tiny encoder</span> <span class="ps-tag">WebGPU</span></div>
+          <canvas id="ps-mel" width="520" height="80"></canvas>
+          <div class="ps-bar"><div></div></div><div class="ps-info dim"></div></div>
+      </div>
+      <div class="pipe-step" data-step="fusion">
+        <div class="ps-icon"></div>
+        <div class="ps-body"><div class="ps-title"><span data-i18n="d.ps.fusion">Flora MoE fusion → 400 parcels</span> <span class="ps-tag">WebGPU</span></div>
+          <div class="ps-bar"><div></div></div><div class="ps-info dim"></div></div>
+      </div>
+      <div class="pipe-step" data-step="done">
+        <div class="ps-icon"></div>
+        <div class="ps-body"><div class="ps-title" data-i18n="d.ps.done">Projected onto cortex</div><div class="ps-info dim"></div>
+          <button id="um-view" class="cta hidden" data-i18n="d.um.view">View on brain</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Guide overlay ════════════════════════════════════════════════════ -->
+<div id="guide-overlay" class="hidden">
+  <div class="guide-backdrop"></div>
+  <div class="guide-card" style="top:84px; left:24px; max-width:300px" data-i18n="d.guide1">
+    <b>1 · The cortical surface.</b> fsaverage5, 20,484 vertices. Drag to rotate,
+    scroll to zoom. Hot spots = predicted BOLD response.
+  </div>
+  <div class="guide-card" style="bottom:96px; left:24px; max-width:300px" data-i18n="d.guide2">
+    <b>2 · Controls.</b> Switch True / Predicted / Compare, morph to the inflated
+    surface, and Open the hemispheres like a book.
+  </div>
+  <div class="guide-card" style="top:84px; right:24px; max-width:320px" data-i18n="d.guide3">
+    <b>3 · Stimuli.</b> Play template clips, benchmark against real fMRI,
+    lesion modalities in-silico — or upload your own video.
+  </div>
+  <div class="guide-card" style="top:8px; left:50%; transform:translateX(-50%); max-width:280px; text-align:center" data-i18n="d.guide4">
+    <b>4 · Activity scale.</b> Vertex-wise signal, robust-normalized per clip.
+  </div>
+  <button id="guide-close" class="cta" data-i18n="d.guide.ok">Got it</button>
+</div>
+
+<script type="module" src="../js/main.js"></script>
+</body>
+</html>

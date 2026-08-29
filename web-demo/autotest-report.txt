@@ -1,0 +1,12 @@
+AUTOTEST:ALL-PASS
+PASS manifest — 6 templates
+PASS template pred shape — 2000 floats
+PASS template pred finite
+PASS template feats shape — 7040 floats
+PASS pial verts
+PASS parcel labels
+PASS parcel range — max label 400
+PASS fusion output shape — 2000 floats
+PASS fusion output finite
+INFO backend=webgpu fusion_ms=567
+PASS fusion matches precomputed — max|diff|=0.0001

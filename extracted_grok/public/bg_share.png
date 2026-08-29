@@ -1,0 +1,66 @@
+<!--
+ (c) Meta Platforms, Inc. and its affiliates.
+ -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/tribev2/M_Favicon_1632.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A self-supervised vision transformer model by FAIR"
+    />
+
+    <!--  Meta Tags -->
+    <meta property="og:url" content="https://aidemos.atmeta.com/tribev2/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="TRIBE v2" />
+    <meta
+      property="og:description"
+      content="A self-supervised vision transformer model by Meta AI"
+    />
+    <meta property="og:image" content="/bg_share.png" />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary" />
+    <meta
+      property="twitter:domain"
+      content="https://aidemos.atmeta.com/tribev2/"
+    />
+    <meta property="twitter:url" content="https://aidemos.atmeta.com/tribev2/" />
+    <meta name="twitter:title" content="TRIBE v2" />
+    <meta
+      name="twitter:description"
+      content="A self-supervised vision transformer model by Meta AI"
+    />
+    <meta
+      name="twitter:image"
+      content="https://aidemos.atmeta.com/tribev2/bg_share.png"
+    />
+
+    <link rel="apple-touch-icon" href="/tribev2/M_Favicon_192x192.png" />
+    <link rel="icon" type="image/png" href="/tribev2/M_Favicon_16x16.png" sizes="16x16" />
+    <link rel="icon" type="image/png" href="/tribev2/M_Favicon_32x32.png" sizes="32x32" />
+    <title>TRIBE v2</title>
+
+    <!-- Preload banner poster at highest priority -->
+    <link rel="preload" as="image" href="images/video-banner.jpg" fetchpriority="high" />
+
+    <!-- Critical fonts -->
+    <link rel="preload" as="font" type="font/woff2" href="fonts/optimistic/Optimistic_Display_W_SBd.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="fonts/optimistic/Optimistic_Text_W_Rg.woff2" crossorigin />
+    <script type="module" crossorigin src="/tribev2/assets/index-eac175a3.js"></script>
+    <link rel="modulepreload" crossorigin href="/tribev2/assets/vendor-react-7b82c02c.js">
+    <link rel="modulepreload" crossorigin href="/tribev2/assets/vendor-router-31ebc9ec.js">
+    <link rel="stylesheet" href="/tribev2/assets/index-30c9bb5d.css">
+  </head>
+
+  <body>
+    <div id="root"></div>
+    
+    <noscript>
+      <h1>You need to enable JavaScript to run this app.</h1>
+    </noscript>
+  </body>
+</html>

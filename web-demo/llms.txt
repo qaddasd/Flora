@@ -1,0 +1,28 @@
+# Flora
+
+> Flora is a lightweight multimodal brain-encoding model (~14M trainable
+> parameters) that predicts fMRI responses to naturalistic video. It maps the
+> audio, visual and textual content of a video onto cortical activity over
+> 400 Schaefer parcels (fsaverage5, 20,484 vertices) and runs entirely
+> in-browser on WebGPU.
+
+This site hosts the Flora project page and a live interactive demo of the
+model (predicted cortical movies, true-vs-predicted comparison, in-silico
+modality lesions, and live inference on user-uploaded video).
+
+## Links
+
+- [Flora report (PDF)](https://qaddasd.github.io/Flora/web-demo/Flora-Report.pdf): full technical report.
+- [Live demo](https://qaddasd.github.io/Flora/web-demo/demo/): whole-brain encoding demo running on WebGPU in the browser.
+- [Source code](https://github.com/qaddasd/Flora): PyTorch training code, ONNX export and web demo.
+- [Model checkpoints](https://github.com/qaddasd/Flora/tree/main/checkpoints): trained weights (best epoch 52, val Pearson r = 0.7278).
+
+## Facts
+
+- Architecture: frozen MobileViT-S (video) + Whisper-Tiny (audio) + MiniLM-L6
+  (text) encoders, MoE fusion transformer (8 experts, top-2 routing), gated
+  modality pooling, learnable HRF convolution, per-subject FiLM conditioning.
+- Best validation Pearson r = 0.7278 (epoch 52); parcel-wise r up to ~0.93 on
+  held-out clips; 98.8% of parcels beat a linear ridge baseline.
+- Web stack: vanilla JS + Three.js custom shaders + ONNX Runtime Web (WebGPU,
+  WASM fallback). No server required.

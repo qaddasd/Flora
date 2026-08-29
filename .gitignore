@@ -28,9 +28,15 @@ cache/
 .env.*
 .mcp.json
 
+# ── Node / Web ──────────────────────────────────────────────
+node_modules/
+.vercel/
+.tanstack/
+
 # ── OS & IDE ───────────────────────────────────────────
 .DS_Store
 Thumbs.db
 .workbuddy-ai/
 .idea/
 .vscode/
+
