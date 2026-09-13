@@ -13,6 +13,17 @@ Flora maps the audio, visual and textual content of a naturalistic video directl
 
 Repository: https://github.com/qaddasd/Flora.git
 
+## Paper / Статья
+
+The paper is published in two versions. Both are currently available in Russian only; versions in other languages are coming soon. / Статья публикуется в двух версиях. Обе пока доступны только на русском языке; версии на других языках — в скором времени.
+
+| Version / Версия | File / Файл |
+|:---|:---|
+| **Official version / Официальная версия** — technical report, 7 pages / технический отчёт, 7 стр. | [web-demo/Flora-Report.pdf](./web-demo/Flora-Report.pdf) |
+| **RKNP version / Версия для РКНП** — NIS Aktau science project, 20 pages / научный проект НИШ г. Актау, 20 стр. | [mainv2.pdf](./mainv2.pdf) |
+
+> On the [web demo](https://qaddasd.github.io/Flora/web-demo/) the *Read the Paper / Читать статью* button opens a picker with both versions (the RKNP one is served as [`web-demo/flora.pdf`](./web-demo/flora.pdf)). / В [веб-демо](https://qaddasd.github.io/Flora/web-demo/) кнопка *Читать статью / Read the Paper* открывает выбор из двух версий (версия для РКНП — файл [`web-demo/flora.pdf`](./web-demo/flora.pdf)).
+
 ---
 
 # English

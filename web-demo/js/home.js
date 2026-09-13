@@ -4,7 +4,7 @@
  */
 
 import { BASE, fetchBin, fetchJSON, f16ToF32, robustRange } from "./util.js";
-import { applyI18n, wireLang, wirePaperToast, getLang } from "./i18n.js";
+import { applyI18n, wireLang, wirePaperModal, getLang } from "./i18n.js";
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
@@ -239,7 +239,7 @@ function wirePanel() {
 
 applyI18n();
 wireLang();
-wirePaperToast();
+wirePaperModal();
 wireNav();
 wireHero();
 wireArticle();

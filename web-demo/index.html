@@ -333,6 +333,42 @@
   <button id="mb-continue"><span data-i18n="m.banner.btn">Continue</span></button>
 </div>
 
+<!-- ══ Paper picker modal: official vs RKNP ══════════════════════════════ -->
+<div id="paper-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="paper-modal-title">
+  <div class="paper-backdrop" data-paper-close></div>
+  <section class="paper-card">
+    <button class="paper-x" data-paper-close data-i18n-aria="m.paper.close" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg>
+    </button>
+    <img class="paper-logo" src="./assets/logo-white.png" alt="Flora" />
+    <h2 id="paper-modal-title" data-i18n="m.paper.title">Выберите версию статьи</h2>
+    <p class="paper-sub" data-i18n="m.paper.sub">Flora публикуется в двух версиях — выберите подходящую:</p>
+    <div class="paper-opts">
+      <a class="paper-opt" href="./Flora-Report.pdf" target="_blank" rel="noreferrer">
+        <span class="paper-ico" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+        </span>
+        <span class="paper-txt">
+          <span class="paper-t" data-i18n="m.paper.off.t">Официальная версия</span>
+          <span class="paper-d" data-i18n="m.paper.off.d">Технический отчёт · 7 страниц · PDF</span>
+        </span>
+        <span class="paper-open" data-i18n="m.paper.open">Открыть</span>
+      </a>
+      <a class="paper-opt paper-opt--rknp" href="./flora.pdf" target="_blank" rel="noreferrer">
+        <span class="paper-ico" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg>
+        </span>
+        <span class="paper-txt">
+          <span class="paper-t" data-i18n="m.paper.rknp.t">Версия для РКНП</span>
+          <span class="paper-d" data-i18n="m.paper.rknp.d">Научный проект НИШ г. Актау · 20 страниц · PDF</span>
+        </span>
+        <span class="paper-open" data-i18n="m.paper.open">Открыть</span>
+      </a>
+    </div>
+    <p class="paper-note" data-i18n="m.paper.note">Статья пока доступна только на русском языке. Версии на других языках — в скором времени.</p>
+  </section>
+</div>
+
 <script type="module" src="./js/home.js"></script>
 </body>
 </html>

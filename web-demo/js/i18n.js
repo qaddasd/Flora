@@ -74,6 +74,15 @@ export const I18N = {
     "m.banner.btn": "Продолжить",
     "m.noscript": "Flora — лёгкая мультимодальная модель кодирования, предсказывающая фМРТ-ответы на естественное видео. Для интерактивной панели нужен JavaScript; для полного демо — браузер с WebGPU.",
     "m.toast": "Статья пока доступна на русском; английская версия — в скором времени.",
+    "m.paper.title": "Выберите версию статьи",
+    "m.paper.sub": "Flora публикуется в двух версиях — выберите подходящую:",
+    "m.paper.off.t": "Официальная версия",
+    "m.paper.off.d": "Технический отчёт · 7 страниц · PDF",
+    "m.paper.rknp.t": "Версия для РКНП",
+    "m.paper.rknp.d": "Научный проект НИШ г. Актау · 20 страниц · PDF",
+    "m.paper.open": "Открыть",
+    "m.paper.close": "Закрыть",
+    "m.paper.note": "Статья пока доступна только на русском языке. Версии на других языках — в скором времени.",
 
     "d.title": "Flora Демо — живое кодирование мозга в вашем браузере",
     "d.home": "Домой",
@@ -197,6 +206,15 @@ export const I18N = {
     "m.banner.btn": "Continue",
     "m.noscript": "Flora — a lightweight multimodal brain encoding model predicting fMRI responses to naturalistic video. This page needs JavaScript for the interactive brain panel; the full demo also requires a WebGPU-capable browser.",
     "m.toast": "The paper is currently available in Russian; English version coming soon.",
+    "m.paper.title": "Choose the paper version",
+    "m.paper.sub": "Flora is published in two versions — pick the one you need:",
+    "m.paper.off.t": "Official version",
+    "m.paper.off.d": "Technical report · 7 pages · PDF",
+    "m.paper.rknp.t": "RKNP version",
+    "m.paper.rknp.d": "NIS Aktau science project · 20 pages · PDF",
+    "m.paper.open": "Open",
+    "m.paper.close": "Close",
+    "m.paper.note": "The paper is currently available in Russian only. Versions in other languages are coming soon.",
 
     "d.title": "Flora Demo — Live Whole-Brain Encoding in Your Browser",
     "d.home": "Home",
@@ -268,6 +286,10 @@ export function applyI18n() {
     const v = dict[el.dataset.i18n];
     if (v != null) el.innerHTML = v;
   });
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    const v = dict[el.dataset.i18nAria];
+    if (v != null) el.setAttribute("aria-label", v);
+  });
   const key = document.body?.dataset.titleKey;
   if (key && dict[key]) document.title = dict[key];
   document.querySelectorAll("[data-lang-btn]").forEach((b) => {
@@ -286,26 +308,33 @@ export function wireLang() {
   );
 }
 
-export function wirePaperToast() {
-  let toast = null;
-  let timer = null;
-  document.querySelectorAll("[data-paper]").forEach((a) =>
-    a.addEventListener("click", (e) => {
+export function wirePaperModal() {
+  const modal = document.getElementById("paper-modal");
+  if (!modal) return;
+  const open = () => {
+    applyI18n();
+    modal.classList.remove("hidden");
+    document.body.classList.add("paper-lock");
+  };
+  const close = () => {
+    modal.classList.add("hidden");
+    document.body.classList.remove("paper-lock");
+  };
+  document.addEventListener("click", (e) => {
+    if (e.target.closest("#paper-modal [data-paper-close]")) { close(); return; }
+    // Direct "Open" buttons inside the modal must open the PDF, not the modal again.
+    if (e.target.closest("#paper-modal .paper-opt")) return;
+    const trigger = e.target.closest('a[data-paper], a[href$="Flora-Report.pdf"]');
+    if (trigger) {
       e.preventDefault();
-      if (!toast) {
-        toast = document.createElement("div");
-        toast.className = "paper-toast";
-        document.body.appendChild(toast);
-      }
-      toast.textContent =
-        getLang() === "ru" ? I18N.ru["m.toast"] : I18N.en["m.toast"];
-      toast.classList.add("show");
-      clearTimeout(timer);
-      const href = a.href;
-      timer = setTimeout(() => {
-        toast.classList.remove("show");
-        window.open(href, "_blank", "noopener");
-      }, 3000);
-    }),
-  );
+      document.getElementById("drawer")?.classList.add("hidden");
+      open();
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
 }
+
+// Backward-compatible alias: previous code wired `wirePaperToast`.
+export const wirePaperToast = wirePaperModal;
