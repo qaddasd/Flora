@@ -65,7 +65,7 @@ export const I18N = {
     "m.s7.c3t": "Здравоохранение",
     "m.s7.c3p": "Заложите основу для улучшения диагностики и лечения заболеваний мозга.",
     "m.s7.more": "Хотите больше?",
-    "m.s7.fine": "Статья, код и веса: <a href=\"./Flora-Report.pdf\" target=\"_blank\" rel=\"noreferrer\">статья</a>, <a href=\"https://github.com/qaddasd/Flora\" target=\"_blank\" rel=\"noreferrer\">код</a>, <a href=\"https://github.com/qaddasd/Flora/tree/main/checkpoints\" target=\"_blank\" rel=\"noreferrer\">модель</a>.",
+    "m.s7.fine": "Статья, код и веса: <a href=\"./main.pdf\" target=\"_blank\" rel=\"noreferrer\">статья</a>, <a href=\"https://github.com/qaddasd/Flora\" target=\"_blank\" rel=\"noreferrer\">код</a>, <a href=\"https://github.com/qaddasd/Flora/tree/main/checkpoints\" target=\"_blank\" rel=\"noreferrer\">модель</a>.",
     "m.foot.code": "Код",
     "m.foot.paper": "Статья",
     "m.foot.demo": "Демо",
@@ -74,10 +74,11 @@ export const I18N = {
     "m.banner.btn": "Продолжить",
     "m.noscript": "Flora — лёгкая мультимодальная модель кодирования, предсказывающая фМРТ-ответы на естественное видео. Для интерактивной панели нужен JavaScript; для полного демо — браузер с WebGPU.",
     "m.toast": "Статья пока доступна на русском; английская версия — в скором времени.",
+    "m.paper.eyebrow": "Flora · научная статья",
     "m.paper.title": "Выберите версию статьи",
     "m.paper.sub": "Flora публикуется в двух версиях — выберите подходящую:",
     "m.paper.off.t": "Официальная версия",
-    "m.paper.off.d": "Технический отчёт · 7 страниц · PDF",
+    "m.paper.off.d": "Полная версия · 35 страниц · PDF",
     "m.paper.rknp.t": "Версия для РКНП",
     "m.paper.rknp.d": "Научный проект НИШ г. Актау · 20 страниц · PDF",
     "m.paper.open": "Открыть",
@@ -197,7 +198,7 @@ export const I18N = {
     "m.s7.c3t": "Healthcare",
     "m.s7.c3p": "Provide a foundation to improve the diagnosis and treatment of brain disorders.",
     "m.s7.more": "Want to go further?",
-    "m.s7.fine": "Paper, code and weights: <a href=\"./Flora-Report.pdf\" target=\"_blank\" rel=\"noreferrer\">paper</a>, <a href=\"https://github.com/qaddasd/Flora\" target=\"_blank\" rel=\"noreferrer\">code</a>, <a href=\"https://github.com/qaddasd/Flora/tree/main/checkpoints\" target=\"_blank\" rel=\"noreferrer\">model</a>.",
+    "m.s7.fine": "Paper, code and weights: <a href=\"./main.pdf\" target=\"_blank\" rel=\"noreferrer\">paper</a>, <a href=\"https://github.com/qaddasd/Flora\" target=\"_blank\" rel=\"noreferrer\">code</a>, <a href=\"https://github.com/qaddasd/Flora/tree/main/checkpoints\" target=\"_blank\" rel=\"noreferrer\">model</a>.",
     "m.foot.code": "Code",
     "m.foot.paper": "Paper",
     "m.foot.demo": "Demo",
@@ -206,10 +207,11 @@ export const I18N = {
     "m.banner.btn": "Continue",
     "m.noscript": "Flora — a lightweight multimodal brain encoding model predicting fMRI responses to naturalistic video. This page needs JavaScript for the interactive brain panel; the full demo also requires a WebGPU-capable browser.",
     "m.toast": "The paper is currently available in Russian; English version coming soon.",
+    "m.paper.eyebrow": "Flora · research paper",
     "m.paper.title": "Choose the paper version",
     "m.paper.sub": "Flora is published in two versions — pick the one you need:",
     "m.paper.off.t": "Official version",
-    "m.paper.off.d": "Technical report · 7 pages · PDF",
+    "m.paper.off.d": "Full version · 35 pages · PDF",
     "m.paper.rknp.t": "RKNP version",
     "m.paper.rknp.d": "NIS Aktau science project · 20 pages · PDF",
     "m.paper.open": "Open",
@@ -324,7 +326,7 @@ export function wirePaperModal() {
     if (e.target.closest("#paper-modal [data-paper-close]")) { close(); return; }
     // Direct "Open" buttons inside the modal must open the PDF, not the modal again.
     if (e.target.closest("#paper-modal .paper-opt")) return;
-    const trigger = e.target.closest('a[data-paper], a[href$="Flora-Report.pdf"]');
+    const trigger = e.target.closest('a[data-paper], a[href$="main.pdf"], a[href$="mainv2.pdf"]');
     if (trigger) {
       e.preventDefault();
       document.getElementById("drawer")?.classList.add("hidden");

@@ -19,10 +19,10 @@ The paper is published in two versions. Both are currently available in Russian 
 
 | Version / Версия | File / Файл |
 |:---|:---|
-| **Official version / Официальная версия** — technical report, 7 pages / технический отчёт, 7 стр. | [web-demo/Flora-Report.pdf](./web-demo/Flora-Report.pdf) |
-| **RKNP version / Версия для РКНП** — NIS Aktau science project, 20 pages / научный проект НИШ г. Актау, 20 стр. | [mainv2.pdf](./mainv2.pdf) |
+| **Official version / Официальная версия** — full version, 35 pages / полная версия, 35 стр. | [web-demo/main.pdf](./web-demo/main.pdf) |
+| **RKNP version / Версия для РКНП** — NIS Aktau science project, 20 pages / научный проект НИШ г. Актау, 20 стр. | [web-demo/mainv2.pdf](./web-demo/mainv2.pdf) |
 
-> On the [web demo](https://qaddasd.github.io/Flora/web-demo/) the *Read the Paper / Читать статью* button opens a picker with both versions (the RKNP one is served as [`web-demo/flora.pdf`](./web-demo/flora.pdf)). / В [веб-демо](https://qaddasd.github.io/Flora/web-demo/) кнопка *Читать статью / Read the Paper* открывает выбор из двух версий (версия для РКНП — файл [`web-demo/flora.pdf`](./web-demo/flora.pdf)).
+> On the [web demo](https://qaddasd.github.io/Flora/web-demo/) the *Read the Paper / Читать статью* button opens a picker with both versions: official [`web-demo/main.pdf`](./web-demo/main.pdf), RKNP [`web-demo/mainv2.pdf`](./web-demo/mainv2.pdf). / В [веб-демо](https://qaddasd.github.io/Flora/web-demo/) кнопка *Читать статью / Read the Paper* открывает выбор из двух версий: официальная — [`web-demo/main.pdf`](./web-demo/main.pdf), для РКНП — [`web-demo/mainv2.pdf`](./web-demo/mainv2.pdf).
 
 ---
 

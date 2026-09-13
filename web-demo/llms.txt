@@ -12,8 +12,8 @@ modality lesions, and live inference on user-uploaded video).
 
 ## Links
 
-- [Flora report (PDF)](https://qaddasd.github.io/Flora/web-demo/Flora-Report.pdf): official technical report (Russian only).
-- [Flora RKNP paper (PDF)](https://qaddasd.github.io/Flora/web-demo/flora.pdf): science-project version for the RKNP competition, NIS Aktau (Russian only).
+- [Flora paper (PDF)](https://qaddasd.github.io/Flora/web-demo/main.pdf): official full version, 35 pages (Russian only).
+- [Flora RKNP paper (PDF)](https://qaddasd.github.io/Flora/web-demo/mainv2.pdf): science-project version for the RKNP competition, NIS Aktau (Russian only).
 - [Live demo](https://qaddasd.github.io/Flora/web-demo/demo/): whole-brain encoding demo running on WebGPU in the browser.
 - [Source code](https://github.com/qaddasd/Flora): PyTorch training code, ONNX export and web demo.
 - [Model checkpoints](https://github.com/qaddasd/Flora/tree/main/checkpoints): trained weights (best epoch 52, val Pearson r = 0.7278).
